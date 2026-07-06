@@ -1,5 +1,7 @@
 using PingMonitor.Api.BackgroundServices;
 using PingMonitor.Api.Hubs;
+using PingMonitor.Core.Interfaces;
+using PingMonitor.Infrastructure.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,17 +13,15 @@ builder.Services.AddCors(options =>
     options.AddPolicy("Frontend", policy =>
     {
         policy
-            .WithOrigins(
-                "http://localhost:5173",
-                "https://localhost:5173"
-            )
+            .WithOrigins("http://localhost:5173", "https://localhost:5173")
             .AllowAnyHeader()
             .AllowAnyMethod()
             .AllowCredentials();
     });
 });
 
-builder.Services.AddHostedService<FakeMonitorService>();
+builder.Services.AddHttpClient<IMonitorService, MonitorService>();
+builder.Services.AddHostedService<MonitorBackgroundService>();
 
 var app = builder.Build();
 

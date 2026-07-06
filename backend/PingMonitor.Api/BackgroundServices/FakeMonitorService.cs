@@ -1,19 +1,19 @@
 using Microsoft.AspNetCore.SignalR;
-using PingMonitor.Api.DTOs;
 using PingMonitor.Api.Hubs;
-using System.Threading.Tasks;
-using System.Threading;
-using System;
+using PingMonitor.Core.Interfaces;
 
 namespace PingMonitor.Api.BackgroundServices;
 
-public class FakeMonitorService : BackgroundService
+public class MonitorBackgroundService : BackgroundService
 {
+    private readonly IServiceScopeFactory _scopeFactory;
     private readonly IHubContext<MonitorHub> _hubContext;
-    private readonly Random _random = new();
 
-    public FakeMonitorService(IHubContext<MonitorHub> hubContext)
+    public MonitorBackgroundService(
+        IServiceScopeFactory scopeFactory,
+        IHubContext<MonitorHub> hubContext)
     {
+        _scopeFactory = scopeFactory;
         _hubContext = hubContext;
     }
 
@@ -21,23 +21,10 @@ public class FakeMonitorService : BackgroundService
     {
         while (!stoppingToken.IsCancellationRequested)
         {
-            var average = _random.Next(10, 35);
+            using var scope = _scopeFactory.CreateScope();
 
-            var snapshot = new MonitorSnapshotDto
-            {
-                Timestamp = DateTime.Now,
-                Status = "OK",
-                RouterLatencyMs = _random.Next(1, 5),
-                AverageLatencyMs = average,
-                MinLatencyMs = average - _random.Next(1, 5),
-                MaxLatencyMs = average + _random.Next(1, 10),
-                JitterMs = _random.Next(0, 8),
-                PacketLossPercent = _random.Next(0, 3),
-                SuccessfulPings = 3,
-                TotalPings = 3,
-                SuccessfulHttpChecks = 3,
-                TotalHttpChecks = 3
-            };
+            var monitorService = scope.ServiceProvider.GetRequiredService<IMonitorService>();
+            var snapshot = await monitorService.CheckAsync(stoppingToken);
 
             await _hubContext.Clients.All.SendAsync("MonitorUpdate", snapshot, stoppingToken);
 

@@ -16,4 +16,9 @@
     <Folder Include="BackgroundServices\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\PingMonitor.Core\PingMonitor.Core.csproj" />
+    <ProjectReference Include="..\PingMonitor.Infrastructure\PingMonitor.Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>
