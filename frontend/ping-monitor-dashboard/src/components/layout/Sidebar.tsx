@@ -1,3 +1,5 @@
+import { NavLink } from "react-router-dom";
+
 import {
   BarChart3,
   Bell,
@@ -6,17 +8,19 @@ import {
   Clock3,
   Gauge,
   Info,
+  MonitorSmartphone,
+  Network,
   Settings,
-  Target,
 } from "lucide-react";
 
 const navItems = [
-  { label: "Dashboard", icon: Gauge, active: true },
-  { label: "History", icon: BarChart3 },
-  { label: "Targets", icon: Target },
-  { label: "Events", icon: Bell },
-  { label: "Settings", icon: Settings },
-  { label: "About", icon: Info },
+  { label: "Dashboard", icon: Gauge, to: "/dashboard" },
+  { label: "Monitors", icon: Network, to: "/monitors" },
+  { label: "Devices", icon: MonitorSmartphone, to: "/devices" },
+  { label: "History", icon: BarChart3, to: "/history" },
+  { label: "Alerts", icon: Bell, to: "/alerts" },
+  { label: "Settings", icon: Settings, to: "/settings" },
+  { label: "About", icon: Info, to: "/about" },
 ];
 
 type Props = {
@@ -40,7 +44,7 @@ export default function Sidebar({ expanded, onToggle }: Props) {
               </div>
 
               <div>
-                <h2 className="font-bold">PingMonitor</h2>
+                <h2 className="font-bold">MonitorHub</h2>
                 <p className="text-xs text-slate-400">Monitoring</p>
               </div>
             </div>
@@ -70,20 +74,23 @@ export default function Sidebar({ expanded, onToggle }: Props) {
             const Icon = item.icon;
 
             return (
-              <button
+              <NavLink
                 key={item.label}
+                to={item.to}
                 title={!expanded ? item.label : undefined}
-                className={`flex items-center rounded-xl py-3 transition ${
-                  expanded ? "gap-4 px-4" : "justify-center px-0"
-                } ${
-                  item.active
-                    ? "bg-blue-500/15 text-blue-400"
-                    : "text-slate-400 hover:bg-white/5 hover:text-white"
-                }`}
+                className={({ isActive }) =>
+                  `flex items-center rounded-xl py-3 transition ${
+                    expanded ? "gap-4 px-4" : "justify-center px-0"
+                  } ${
+                    isActive
+                      ? "bg-blue-500/15 text-blue-400"
+                      : "text-slate-400 hover:bg-white/5 hover:text-white"
+                  }`
+                }
               >
                 <Icon size={22} />
                 {expanded && <span>{item.label}</span>}
-              </button>
+              </NavLink>
             );
           })}
         </nav>
