@@ -1,9 +1,10 @@
 import LivePingChart from "../../../components/charts/LivePingChart";
 import InternetCheckOverview from "../components/InternetCheckOverview";
-import PingChecksPanel from "../components/connectivity/PingChecksPanel";
-import WebChecksPanel from "../components/connectivity/WebChecksPanel";
-import DnsChecksPanel from "../components/connectivity/DnsChecksPanel";
+import PingTargetsCard from "../components/connectivity/PingTargetsCard";
+import WebChecksCard from "../components/connectivity/WebChecksCard";
+import DnsChecksCard from "../components/connectivity/DnsChecksCard";
 import PerformancePanel from "../components/performance/PerformancePanel";
+import RouterStatusCard from "../components/connectivity/RouterStatusCard";
 
 export default function InternetCheckOverviewPage() {
   return (
@@ -14,15 +15,16 @@ export default function InternetCheckOverviewPage() {
         <LivePingChart />
       </section>
 
-      <section className="mt-6 grid gap-6 xl:grid-cols-3">
-        <PingChecksPanel />
-        <WebChecksPanel />
-        <DnsChecksPanel />
-      </section>
-
-      <section className="mt-6">
+     <section className="mt-6 grid gap-6 xl:grid-cols-2">
+        <RouterStatusCard />
         <PerformancePanel />
-      </section>
+    </section>
+
+    <section className="mt-6 grid gap-6 xl:grid-cols-3">
+        <PingTargetsCard />
+        <WebChecksCard />
+        <DnsChecksCard />
+    </section>
     </>
   );
 }
